@@ -36,15 +36,7 @@ func ConvertIt(a string) string {
 func main() {
 
 	crane := [][]string{}
-	// a := []string{"S", "P", "H", "V", "F", "G"}
-	// b := []string{"M", "Z", "D", "V", "B", "F", "J", "G"}
-	// c := []string{"N", "J", "L", "M", "G"}
-	// d := []string{"P", "W", "D", "V", "Z", "G", "N"}
-	// e := []string{"B", "C", "R", "V"}
-	// f := []string{"Z", "L", "W", "P", "M", "S", "R", "V"}
-	// g := []string{"P", "H", "T"}
-	// h := []string{"V", "Z", "H", "C", "N", "S", "R", "Q"}
-	// i := []string{"J", "Q", "V", "P", "G", "L", "F"}
+
 	a := []string{"G", "F", "V", "H", "P", "S"}
 	b := []string{"G", "J", "F", "B", "V", "D", "Z", "M"}
 	c := []string{"G", "M", "L", "J", "N"}
