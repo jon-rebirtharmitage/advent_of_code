@@ -24,7 +24,6 @@ func DetermineMessage(a []string, i int) {
 	if i > 0 {
 		for j := i - 1; j >= 0; j-- {
 			if a[i] != a[j] {
-				//fmt.Println("This happened")
 				p = append(p, true)
 			} else {
 				p = append(p, false)
