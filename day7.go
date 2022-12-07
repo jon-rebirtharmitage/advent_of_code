@@ -22,6 +22,7 @@ func main() {
 	current := "/"
 	parent := "ROOT"
 	ct := 0
+	driveSum := 0
 	//foo := false
 	f, err := os.Open("filespace.txt")
 
@@ -94,6 +95,7 @@ func main() {
 		} else if !strings.Contains(scanner.Text(), "$") && !strings.Contains(scanner.Text(), "dir ") {
 			a := strings.Split(scanner.Text(), " ")
 			b, _ := strconv.Atoi(a[0])
+			driveSum += b
 			d := Dir{m[current].id, m[current].parent, m[current].dirs, m[current].cont, (m[current].total + b)}
 			m[current] = d
 		}
@@ -115,11 +117,20 @@ func main() {
 
 	for k, _ := range m {
 		if m[k].total <= 100000 {
+			//fmt.Println("Found one", m[k])
 			final += m[k].total
 		}
 	}
 
+	for q, _ := range m {
+		if m[q].total >= 19731435 {
+			fmt.Println("Found one", m[q])
+			//final += m[k].total
+		}
+	}
+
 	fmt.Println(final)
-	fmt.Println(ct)
-	fmt.Println(len(m))
+	//fmt.Println(ct)
+	fmt.Println(driveSum)
+	//fmt.Println(len(m))
 }
