@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Dir struct {
@@ -35,7 +36,7 @@ func main() {
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
-		ct += 1
+		//ct += 1
 		if parent == "" {
 			//parent = "/"
 			fmt.Println("ERROR ")
@@ -105,32 +106,43 @@ func main() {
 		log.Fatal(err)
 	}
 
+	finalBatch := []Dir{}
+	foo := map[string]Dir{}
+	nuFinal := 0
+	foo = map[string]Dir{}
+	bar := 0
 	final := 0
 	for k, _ := range m {
+		bar = m[k].total
 		for b, _ := range m {
 			if strings.Contains(b, k) && b != k {
-				d := Dir{m[k].id, m[k].parent, m[k].dirs, m[k].cont, (m[k].total + m[b].total)}
-				m[k] = d
+				//d = Dir{m[k].id, m[k].parent, m[k].dirs, m[k].cont, (m[k].total + m[b].total)}
+				bar += m[b].total
 			}
 		}
+		nuFinal += bar
+		foo[k] = Dir{m[k].id, m[k].parent, m[k].dirs, m[k].cont, (bar)}
 	}
 
-	for k, _ := range m {
-		if m[k].total <= 100000 {
-			//fmt.Println("Found one", m[k])
-			final += m[k].total
-		}
+	time.Sleep(8 * time.Second)
+	for r, _ := range foo {
+		finalBatch = append(finalBatch, foo[r])
 	}
 
-	for q, _ := range m {
-		if m[q].total >= 19731435 {
-			fmt.Println("Found one", m[q])
+	for v := range finalBatch {
+		ct += 1
+		if finalBatch[v].total >= 268565 {
+			fmt.Println("Found one", finalBatch[v].total)
 			//final += m[k].total
+		}
+		if finalBatch[v].total <= 100000 {
+			final += finalBatch[v].total
 		}
 	}
 
 	fmt.Println(final)
-	//fmt.Println(ct)
+	fmt.Println(nuFinal)
 	fmt.Println(driveSum)
 	//fmt.Println(len(m))
+	fmt.Println(len(foo))
 }
