@@ -71,6 +71,7 @@ for i in monkeys.keys():
 modifier = 1
 for i in operations.keys():
     modifier *= operations[i][2]
+    print(modifier)
 
 for _ in range(10000):
     for i in monkeys_2.keys():
