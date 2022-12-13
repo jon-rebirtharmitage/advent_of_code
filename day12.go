@@ -36,127 +36,6 @@ func AssignElevation(s string) int {
 	return -1
 }
 
-func pathfinder() {
-	start := Point{}
-	finish := Point{}
-	for a := range grid {
-		if grid[a].elev == 0 {
-			start = grid[a]
-		}
-		if grid[a].elev == 27 {
-			finish = grid[a]
-		}
-	}
-	fmt.Println(start, " ", finish)
-	startString := strconv.Itoa(start.x) + ":" + strconv.Itoa(start.y)
-	queue := make(map[string]Point)
-	for k, v := range grid {
-		queue[k] = v
-	}
-	visited := map[string]string{}
-	fmt.Println(startString)
-	visited[startString] = startString
-	stepCount := 0
-	row := []int{-1, 0, 0, 1}
-	col := []int{0, -1, 1, 0}
-	failed := false
-	current := grid[startString]
-	e := ""
-	r := ""
-	for len(queue) > 0 && !failed {
-		stepCount++
-
-		//Check if successful
-		if current.elev == finish.elev {
-			//End operation
-			if current.elev == 27 {
-				break
-			}
-			fmt.Println("End Operation")
-			break
-		}
-
-		vtrack := len(visited)
-
-		for a := 0; a < 4; a++ {
-			e = strconv.Itoa(current.x) + ":" + strconv.Itoa(current.y)
-			nextX := current.x + row[a]
-			nextY := current.y + col[a]
-			//fmt.Println(nextX, nextY)
-			r = strconv.Itoa(nextX) + ":" + strconv.Itoa(nextY)
-
-			if isValid(nextX, nextY) && grid[r].elev != 0 { //Path is possible within bounds
-				//fmt.Println(grid[r])
-
-				if queue[r].elev == queue[e].elev+1 {
-					//fmt.Println(queue[r].elev, queue[e].elev)
-					if _, ok := visited[r]; !ok {
-						current = queue[r]
-						//fmt.Println("Q of R : ", queue[r])
-						delete(queue, e)
-						visited[e] = e
-					}
-				}
-			}
-		}
-
-		if len(visited) == vtrack {
-			for a := 0; a < 4; a++ {
-				e = strconv.Itoa(current.x) + ":" + strconv.Itoa(current.y)
-				nextX := current.x + row[a]
-				nextY := current.y + col[a]
-				//fmt.Println(nextX, nextY)
-				r = strconv.Itoa(nextX) + ":" + strconv.Itoa(nextY)
-
-				if isValid(nextX, nextY) && grid[r].elev != 0 { //Path is possible within bounds
-					//fmt.Println(grid[r])
-
-					if queue[r].elev == queue[e].elev {
-						//fmt.Println(queue[r].elev, queue[e].elev)
-						if _, ok := visited[r]; !ok {
-							current = queue[r]
-							//fmt.Println("Q of R : ", queue[r])
-							delete(queue, e)
-							visited[e] = e
-						}
-					}
-				}
-			}
-		}
-
-		if len(visited) == vtrack {
-			for a := 0; a < 4; a++ {
-				e = strconv.Itoa(current.x) + ":" + strconv.Itoa(current.y)
-				nextX := current.x + row[a]
-				nextY := current.y + col[a]
-				//fmt.Println(nextX, nextY)
-				r = strconv.Itoa(nextX) + ":" + strconv.Itoa(nextY)
-
-				if isValid(nextX, nextY) && grid[r].elev != 0 { //Path is possible within bounds
-					//fmt.Println(grid[r])
-
-					if queue[r].elev == queue[e].elev-1 {
-						//fmt.Println(queue[r].elev, queue[e].elev)
-						if _, ok := visited[r]; !ok {
-							current = queue[r]
-							//fmt.Println("Q of R : ", queue[r])
-							delete(queue, e)
-							visited[e] = e
-						}
-					}
-				}
-			}
-		}
-
-		if len(visited) == vtrack {
-			fmt.Println("Dead End")
-			break
-		}
-
-	}
-	fmt.Println(len(visited))
-}
-
 func isValid(x, y int) bool {
 	return (x >= 0) && (x < maxX) && (y <= 0) && (y > maxY)
 }
@@ -179,27 +58,53 @@ func FindPaths() {
 			}
 			//check left
 			if j-1 >= 0 {
-				if rows[i][j-1] <= rows[i][j]+1 {
+				if rows[i][j-1] == rows[i][j]+1 {
 					v += "L"
 					//fmt.Println("Can moved LEFT")
 				}
 			}
 			if j+1 < maxX {
-				if rows[i][j+1] <= rows[i][j]+1 {
+				if rows[i][j+1] == rows[i][j]+1 {
 					v += "R"
 					//fmt.Println("Can moved RIGHT")
 				}
 			}
-			if i+1 < maxY {
-				if rows[i+1][j] <= rows[i][j]+1 {
+			if -(i + 1) > maxY {
+				if rows[i+1][j] == rows[i][j]+1 {
 					//fmt.Println("Can moved DOWN")
-					v += "U"
+					v += "D"
 				}
 			}
 			if i-1 >= 0 {
-				if rows[i-1][j] <= rows[i][j]+1 {
-					v += "D"
+				if rows[i-1][j] == rows[i][j]+1 {
+					v += "U"
 					//fmt.Println("Can moved UP")
+				}
+			}
+			if v == "." {
+				if j-1 >= 0 {
+					if rows[i][j-1] <= rows[i][j]+1 {
+						v += "L"
+						//fmt.Println("Can moved LEFT")
+					}
+				}
+				if j+1 < maxX {
+					if rows[i][j+1] <= rows[i][j]+1 {
+						v += "R"
+						//fmt.Println("Can moved RIGHT")
+					}
+				}
+				if -(i + 1) > maxY {
+					if rows[i+1][j] <= rows[i][j]+1 {
+						//fmt.Println("Can moved DOWN")
+						v += "D"
+					}
+				}
+				if i-1 >= 0 {
+					if rows[i-1][j] <= rows[i][j]+1 {
+						v += "U"
+						//fmt.Println("Can moved UP")
+					}
 				}
 			}
 			cartRow = append(cartRow, v)
@@ -209,16 +114,80 @@ func FindPaths() {
 	for z := range cart {
 		fmt.Println(cart[z])
 	}
-	//Find all Paths
-	// Set Step Count to 0
+	//BFS Algorithm
 	step := 0
-	// Loop through Cart to find available paths
-	// If Step Count < Step Count > 0 set Steph Count
-	// HOW to REACH the END????
 	cx := start.x
 	cy := start.y
-	failed := false
-	for cx != finish.x && cy != finish.y && !failed {
+	visited := map[string]string{}
+	queue := []string{}
+	queue = append(queue, (strconv.Itoa(cy) + ":" + strconv.Itoa(cx)))
+	//visited = append(visited, (strconv.Itoa(cy) + ":" + strconv.Itoa(cx)))
+	fmt.Println(finish.x, finish.y)
+	for len(queue) > 0 {
+		step += 1
+		v := queue[0]
+		queue = queue[1:]
+		cor := strings.Split(v, ":")
+		currentX, _ := strconv.Atoi(cor[1])
+		currentY, _ := strconv.Atoi(cor[0])
+		fmt.Println("Current Eval : ", v)
+		if currentX == finish.x && currentY == finish.y {
+			fmt.Println("Success!", currentX, currentY)
+			break
+		}
+		//visited[v] = v
+		node := strings.Split(cart[currentY][currentX], "")
+		for i := range node {
+			if node[i] == "." {
+				//do nothing
+			}
+			//Move Left
+			if currentX-1 >= 0 {
+				if rows[currentY][currentX-1] <= rows[currentY][currentX]+1 {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX-1))
+					if _, ok := visited[v]; !ok {
+						queue = append(queue, next)
+					}
+				}
+			}
+			//Move Right
+			if currentX+1 < maxX {
+				if rows[currentY][currentX+1] <= rows[currentY][currentX]+1 {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX+1))
+					if _, ok := visited[v]; !ok {
+						queue = append(queue, next)
+					}
+				}
+			}
+			//Move Up
+			if currentY-1 >= 0 {
+				if rows[currentY-1][currentX] <= rows[currentY][currentX]+1 {
+					next := (strconv.Itoa(currentY-1) + ":" + strconv.Itoa(currentX))
+					if _, ok := visited[v]; !ok {
+						queue = append(queue, next)
+					}
+				}
+			}
+			//Move Down
+			if currentY+1 < maxY {
+				if rows[currentY+1][currentX] <= rows[currentY][currentX]+1 {
+					next := (strconv.Itoa(currentY+1) + ":" + strconv.Itoa(currentX))
+					if _, ok := visited[v]; !ok {
+						queue = append(queue, next)
+					}
+				}
+			}
+		}
+		visited[v] = v
+		// fmt.Println("DEBUG")
+		// fmt.Println(queue)
+		// fmt.Println("=======")
+		//fmt.Println(visited)
+
+	}
+	fmt.Println("Steps : ", len(visited))
+
+	/* 	for cx != finish.x && cy != finish.y && !failed {
 		icart := cart
 		if cx == finish.x && cy == finish.y {
 			fmt.Println(step)
@@ -260,11 +229,15 @@ func FindPaths() {
 				failed = true
 			}
 		}
-	}
+	} */
 }
 
 func removeCart(slice []string, s int) []string {
 	return append(slice[:s], slice[s+1:]...)
+}
+
+func truePathfinder() {
+
 }
 
 func main() {
@@ -290,6 +263,7 @@ func main() {
 			cRow = append(cRow, p.elev)
 			X = append(X, i)
 			Y = append(Y, yIndex)
+
 		}
 		rows = append(rows, cRow)
 		yIndex--
@@ -297,11 +271,18 @@ func main() {
 	}
 	maxY = yIndex
 	maxX = len(rows[0])
+
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	pathfinder()
-
+	//pathfinder()
+	FindPaths()
+	for i := range rows {
+		// for j := range rows[i] {
+		// 	//fmt.Println(i, j)
+		// }
+		fmt.Println(rows[i])
+	}
 	fmt.Println(maxX, " ", maxY)
 }
