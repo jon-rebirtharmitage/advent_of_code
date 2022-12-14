@@ -27,7 +27,7 @@ func breakoutComponents(p packet, i int) {
 		if p.alpha[a] == "[" && len(currentSliceA) != 0 {
 			p.gamma = append(p.gamma, currentSliceA)
 			currentSliceA = []int{}
-		} else if p.alpha[a] == "," {
+		} else if p.alpha[a] == " " {
 			//do nothing
 		} else if p.alpha[a] == "]" {
 			p.gamma = append(p.gamma, currentSliceA)
@@ -46,7 +46,7 @@ func breakoutComponents(p packet, i int) {
 		if p.beta[b] == "[" && len(currentSliceB) != 0 {
 			p.delta = append(p.delta, currentSliceB)
 			currentSliceB = []int{}
-		} else if p.beta[b] == "," {
+		} else if p.beta[b] == " " {
 			//do nothing
 		} else if p.beta[b] == "]" {
 			p.delta = append(p.delta, currentSliceB)
