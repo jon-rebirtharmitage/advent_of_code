@@ -15,7 +15,7 @@ if __name__ == "__main__":
     minY = 0
     maxX = 0
     maxY = 0
-
+    numArray = []
     for index, line in enumerate(lines):
         a = line.split(" ")
         b = a[2].split("=")
@@ -47,43 +47,45 @@ if __name__ == "__main__":
         if int(i) > maxY:
             maxY = int(i)
         gridSensor[j] = (int(g), int(i), "S")
-        gridBeacon[k] = "B"
+        numArray.append((int(g), int(i)))
+        #gridBeacon[k] = "B"
     # print(gridSensor)
     # print(gridBeacon)
     # print(minX, maxX)
     # print(minY,maxY)
     xDimension = ((abs(minX)+abs(maxX)))
     yDimension = ((abs(minY)+abs(maxY)))
-    cx = minX
-    cy = minY
-    ct = minY
-    cr = minX
-    numArray = []
-    while ct <= maxY:
-        cr = minX
-        while cr <= maxX:
-            #if (cr,ct) in gridBeacon:
-                #grid[(cr,ct)] = (cr, ct, "B")
-            if (cr,ct) in gridSensor:
-                grid[(cr,ct)] = (gridSensor[(cr,ct)][0], gridSensor[(cr, ct)][1], "S")
-                numArray.append((cr, ct))
-            #else:
-                #grid[(cr,ct)] = (cr, ct, ".")
+    # cx = minX
+    # cy = minY
+    # ct = minY
+    # cr = minX
+
+    # while ct <= maxY:
+    #     cr = minX
+    #     while cr <= maxX:
+    #         #if (cr,ct) in gridBeacon:
+    #             #grid[(cr,ct)] = (cr, ct, "B")
+    #         if (cr,ct) in gridSensor:
+    #             grid[(cr,ct)] = (gridSensor[(cr,ct)][0], gridSensor[(cr, ct)][1], "S")
+    #             numArray.append((cr, ct))
+    #         #else:
+    #             #grid[(cr,ct)] = (cr, ct, ".")
             
-            cr += 1
-        ct += 1
+    #         cr += 1
+    #     ct += 1
     count = 0
     points = np.array(numArray)
-
-    for al in grid:
+    finalSAdd = 0
+    final = 10
+    for al in gridSensor:
         point_tree = spatial.cKDTree(points)
-        if grid[al][2] == "S":
-            #print(al , grid[al])
+        if gridSensor[al][2] == "S":
+            print(al , gridSensor[al])
             #find all coordinates within distance
             a = al[0]
             b = al[1]
-            c = grid[al][0]
-            d = grid[al][1]
+            c = gridSensor[al][0]
+            d = gridSensor[al][1]
             md = manhattanDistance(a, b, c, d)
             amax = (a + man, b)
             amin = (a - man, b)
@@ -92,23 +94,33 @@ if __name__ == "__main__":
             #point_tree = spatial.cKDTree([al[0], al[1]], md)
             # This finds the index of all points within distance 1 of [1.5,2.5].
             mapThis = point_tree.data[point_tree.query_ball_point([al[0], al[1]], md)]
+            print(mapThis)
             v = 0
+            if al[1] == final:
+                grid[(al[0],al[1])] = "#"
+            if gridSensor[al][1] == final:
+                grid[(gridSensor[al][0], gridSensor[al][1])] = "#"
             while v < len(mapThis):
+                if mapThis[v][1] == final:
+                    print("In the target row", mapThis[v][0], mapThis[v][1])
+                    grid[(mapThis[v][0], mapThis[v][1])] = "#"
+                    finalSAdd += 1
                 #print(int(mapThis[v][0]), int(mapThis[v][1]))
-                popGrid = grid[int(mapThis[v][0]), int(mapThis[v][1])] 
-                if popGrid[2] != "S" or popGrid[2] != "B":
-                    grid[int(mapThis[v][0]), int(mapThis[v][1])] = (popGrid[0], popGrid[1], "#")
+                # popGrid = grid[int(mapThis[v][0]), int(mapThis[v][1])] 
+                # if popGrid[2] != "S" or popGrid[2] != "B":
+                #     grid[int(mapThis[v][0]), int(mapThis[v][1])] = (popGrid[0], popGrid[1], "#")
                 v += 1
-    final = 2000000
+ 
     finalCounter = 0
     finalStart = minX
     finalEnd = maxX
-    while finalStart <= finalEnd:
-        if grid[finalStart, final][2] == "#":
-            finalCounter += 1
-        finalStart += 1
+
+    finalCounter = yDimension - finalSAdd
             
-    print(finalCounter)
+    print(finalSAdd, finalCounter)
+    print(len(gridSensor))
+    print(grid)
+    print(len(grid))
         
 
 

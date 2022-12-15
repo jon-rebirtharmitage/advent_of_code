@@ -37,7 +37,7 @@ func AssignElevation(s string) int {
 }
 
 func isValid(x, y int) bool {
-	return (x >= 0) && (x < maxX) && (y <= 0) && (y > maxY)
+	return (x >= 0) && (x < maxX) && (y >= 0) && (y < maxY)
 }
 
 func FindPaths() {
@@ -58,51 +58,51 @@ func FindPaths() {
 			}
 			//check left
 			if j-1 >= 0 {
-				if rows[i][j-1] == rows[i][j]+1 {
+				if rows[i][j-1] <= rows[i][j]+1 {
 					v += "L"
 					//fmt.Println("Can moved LEFT")
 				}
 			}
 			if j+1 < maxX {
-				if rows[i][j+1] == rows[i][j]+1 {
+				if rows[i][j+1] <= rows[i][j]+1 {
 					v += "R"
 					//fmt.Println("Can moved RIGHT")
 				}
 			}
-			if -(i + 1) > maxY {
-				if rows[i+1][j] == rows[i][j]+1 {
+			if (i + 1) < maxY {
+				if rows[i+1][j] <= rows[i][j]+1 {
 					//fmt.Println("Can moved DOWN")
 					v += "D"
 				}
 			}
 			if i-1 >= 0 {
-				if rows[i-1][j] == rows[i][j]+1 {
+				if rows[i-1][j] <= rows[i][j]+1 {
 					v += "U"
 					//fmt.Println("Can moved UP")
 				}
 			}
 			if v == "." {
 				if j-1 >= 0 {
-					if rows[i][j-1] <= rows[i][j]+1 {
-						v += "L"
+					if rows[i][j-1] <= rows[i][j] {
+						v += "l"
 						//fmt.Println("Can moved LEFT")
 					}
 				}
 				if j+1 < maxX {
-					if rows[i][j+1] <= rows[i][j]+1 {
-						v += "R"
+					if rows[i][j+1] <= rows[i][j] {
+						v += "r"
 						//fmt.Println("Can moved RIGHT")
 					}
 				}
-				if -(i + 1) > maxY {
-					if rows[i+1][j] <= rows[i][j]+1 {
+				if (i + 1) < maxY {
+					if rows[i+1][j] <= rows[i][j] {
 						//fmt.Println("Can moved DOWN")
-						v += "D"
+						v += "d"
 					}
 				}
 				if i-1 >= 0 {
-					if rows[i-1][j] <= rows[i][j]+1 {
-						v += "U"
+					if rows[i-1][j] <= rows[i][j] {
+						v += "u"
 						//fmt.Println("Can moved UP")
 					}
 				}
@@ -130,114 +130,78 @@ func FindPaths() {
 		cor := strings.Split(v, ":")
 		currentX, _ := strconv.Atoi(cor[1])
 		currentY, _ := strconv.Atoi(cor[0])
-		fmt.Println("Current Eval : ", v)
+		//fmt.Println("Current Eval : ", cart[currentY][currentX])
 		if currentX == finish.x && currentY == finish.y {
 			fmt.Println("Success!", currentX, currentY)
 			break
 		}
 		//visited[v] = v
 		node := strings.Split(cart[currentY][currentX], "")
+		st := len(queue)
 		for i := range node {
 			if node[i] == "." {
 				//do nothing
 			}
 			//Move Left
-			if currentX-1 >= 0 {
-				if rows[currentY][currentX-1] <= rows[currentY][currentX]+1 {
-					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX-1))
-					if _, ok := visited[v]; !ok {
-						queue = append(queue, next)
-					}
-				}
-			}
-			//Move Right
-			if currentX+1 < maxX {
-				if rows[currentY][currentX+1] <= rows[currentY][currentX]+1 {
-					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX+1))
-					if _, ok := visited[v]; !ok {
-						queue = append(queue, next)
-					}
-				}
-			}
-			//Move Up
-			if currentY-1 >= 0 {
-				if rows[currentY-1][currentX] <= rows[currentY][currentX]+1 {
-					next := (strconv.Itoa(currentY-1) + ":" + strconv.Itoa(currentX))
-					if _, ok := visited[v]; !ok {
-						queue = append(queue, next)
-					}
-				}
-			}
-			//Move Down
-			if currentY+1 < maxY {
-				if rows[currentY+1][currentX] <= rows[currentY][currentX]+1 {
+			if isValid(currentX, currentY) {
+				if node[i] == "D" {
 					next := (strconv.Itoa(currentY+1) + ":" + strconv.Itoa(currentX))
 					if _, ok := visited[v]; !ok {
-						queue = append(queue, next)
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "R" {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX+1))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "U" {
+					next := (strconv.Itoa(currentY-1) + ":" + strconv.Itoa(currentX))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "L" {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX-1))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				}
+			} else {
+
+			}
+		}
+		if len(queue) == st && isValid(currentX, currentY) {
+			//fmt.Println("No Good Path")
+			for i := range node {
+				if node[i] == "l" {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX-1))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "r" {
+					next := (strconv.Itoa(currentY) + ":" + strconv.Itoa(currentX+1))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "u" {
+					next := (strconv.Itoa(currentY-1) + ":" + strconv.Itoa(currentX))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
+					}
+				} else if node[i] == "d" {
+					next := (strconv.Itoa(currentY+1) + ":" + strconv.Itoa(currentX))
+					if _, ok := visited[v]; !ok {
+						queue = append([]string{next}, queue...)
 					}
 				}
 			}
 		}
 		visited[v] = v
-		// fmt.Println("DEBUG")
-		// fmt.Println(queue)
-		// fmt.Println("=======")
-		//fmt.Println(visited)
-
 	}
-	fmt.Println("Steps : ", len(visited))
-
-	/* 	for cx != finish.x && cy != finish.y && !failed {
-		icart := cart
-		if cx == finish.x && cy == finish.y {
-			fmt.Println(step)
-			break
-		}
-		n := strings.Split(icart[cy][cx], "")
-		for o := range n {
-			if n[o] != "." {
-				if n[o] == "R" {
-					//icart[cy][cx] = strings.Join(removeCart(n, o), " ")
-					cx++
-					step += 1
-					fmt.Println(icart[cy][cx])
-					break
-				} else if n[o] == "D" {
-					//icart[cy][cx] = strings.Join(removeCart(n, o), " ")
-					cy++
-					step += 1
-					fmt.Println(icart[cy][cx])
-					break
-				} else if n[o] == "L" {
-					//icart[cy][cx] = strings.Join(removeCart(n, o), " ")
-					cx--
-					step += 1
-					fmt.Println(icart[cy][cx])
-					break
-				} else if n[o] == "U" {
-					//icart[cy][cx] = strings.Join(removeCart(n, o), " ")
-					cy--
-					step += 1
-					fmt.Println(icart[cy][cx])
-					break
-				} else {
-					step = 0
-					failed = true
-				}
-			} else {
-				step = 0
-				failed = true
-			}
-		}
-	} */
+	fmt.Println(len(visited) - 1)
 }
 
 func removeCart(slice []string, s int) []string {
 	return append(slice[:s], slice[s+1:]...)
-}
-
-func truePathfinder() {
-
 }
 
 func main() {
@@ -266,7 +230,7 @@ func main() {
 
 		}
 		rows = append(rows, cRow)
-		yIndex--
+		yIndex++
 
 	}
 	maxY = yIndex
@@ -278,11 +242,6 @@ func main() {
 
 	//pathfinder()
 	FindPaths()
-	for i := range rows {
-		// for j := range rows[i] {
-		// 	//fmt.Println(i, j)
-		// }
-		fmt.Println(rows[i])
-	}
+
 	fmt.Println(maxX, " ", maxY)
 }
