@@ -62,13 +62,13 @@ if __name__ == "__main__":
     while ct <= maxY:
         cr = minX
         while cr <= maxX:
-            if (cr,ct) in gridBeacon:
-                grid[(cr,ct)] = (cr, ct, "B")
-            elif (cr,ct) in gridSensor:
+            #if (cr,ct) in gridBeacon:
+                #grid[(cr,ct)] = (cr, ct, "B")
+            if (cr,ct) in gridSensor:
                 grid[(cr,ct)] = (gridSensor[(cr,ct)][0], gridSensor[(cr, ct)][1], "S")
                 numArray.append((cr, ct))
-            else:
-                grid[(cr,ct)] = (cr, ct, ".")
+            #else:
+                #grid[(cr,ct)] = (cr, ct, ".")
             
             cr += 1
         ct += 1
