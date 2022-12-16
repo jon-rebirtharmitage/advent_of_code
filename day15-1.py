@@ -28,7 +28,6 @@ def parse_input(input_str):
 def solve_first(sensors):
     # assuming no beacons or signal gaps on y = 2_000_000
     min_x, max_x = inf, -inf
-    print(inf)
     for x, y, r in sensors:
         dy = abs(2000000 - y)
         if dy > r:
