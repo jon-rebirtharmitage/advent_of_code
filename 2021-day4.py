@@ -1,6 +1,7 @@
 boards = {}
 bingos = []
 finalCall = 0
+totalWinners = {}
 
 def markBingos(m):
     z = 0
@@ -32,8 +33,10 @@ def checkWins(beta):
                 b += 1
             if len(t) == 5:
                 print("There is a winner : ", z)
-                calcWinner(z, beta)
-                return True
+                totalWinners[z] = "Winner"
+                if len(totalWinners) == len(boards):
+                    calcWinner(z, beta)
+                    return True
             a += 1
         z += 1
     z = 0
@@ -49,14 +52,15 @@ def checkWins(beta):
                 b += 1
             if len(t) == 5:
                 print("There is a winner : ", z)
-                calcWinner(z, beta)
-                return True
+                totalWinners[z] = "Winner"
+                if len(totalWinners) == len(boards):
+                    calcWinner(z, beta)
+                    return True
             a += 1
         z += 1
     return False
 
 def calcWinner(z, beta):
-    print(boards[z])
     q = 0
     a = 0
     t = []
@@ -128,22 +132,22 @@ if __name__ == "__main__":
 
 
 
-    # print("========= Boards ============")
-    # z = 0
-    # a = 0
-    # while z < len(boards):
-    #     a = 0
-    #     while a < 5:
-    #         t = []
-    #         b = 0
-    #         while b < 5:
-    #             t.append(boards[z][(b,a)])
-    #             b += 1
-    #         print(t)           
-    #         a += 1
-    #     print("========================")
-    #     z += 1
-    # print("============End of Boards============")
+    print("========= Boards ============")
+    z = 0
+    a = 0
+    while z < len(boards):
+        a = 0
+        while a < 5:
+            t = []
+            b = 0
+            while b < 5:
+                t.append(boards[z][(b,a)])
+                b += 1
+            print(t)           
+            a += 1
+        print("========================")
+        z += 1
+    print("============End of Boards============")
 
 
 
