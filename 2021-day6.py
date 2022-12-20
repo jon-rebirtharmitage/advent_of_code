@@ -1,4 +1,5 @@
 laterns = []
+lat = []
 
 if __name__ == "__main__":
     file = open('2021-day6.txt', 'r')
@@ -9,14 +10,19 @@ if __name__ == "__main__":
         for b in a:
             laterns.append(int(b))
     i = 0
-    while i < 256:
-        q = 0
-        while q < len(laterns):
-            if laterns[q] == 0:
-                laterns.append(9)
-                laterns[q] = 6
-            else:
-                laterns[q] -= 1
-            q += 1
+    while i < 9:
+        lat.append(laterns.count(i))
         i += 1
-    print(len(laterns))
+
+    j = 0
+    while j < 256:
+        g = lat.pop(0)
+        lat[6] = lat[6] + g
+        lat.append(g)
+        j += 1
+
+    s = 0
+    for n in lat:
+        s += n
+
+    print(s)
