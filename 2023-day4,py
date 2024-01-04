@@ -1,0 +1,65 @@
+from dataclasses import dataclass
+
+@dataclass
+class Game():
+    id: int
+    winningNumbers: list
+    numbersYouHave: list
+    matches: list
+    value: int
+    copies: int
+
+if __name__ == "__main__":
+    file = open('2023-day4.txt', 'r')
+    lines = file.readlines()
+
+    Games = []
+    Worth = 0
+    for index, line in enumerate(lines):
+        a = line.split(":")
+        b = a[0].split(" ")
+        c = a[1].split("|")
+        d = c[0].split(" ")
+        e = []
+        for i in range(len(d)):
+            if len(d[i]) >= 1:
+                e.append(d[i])
+        #print(e)
+        f = c[1].split(" ")
+        g = []
+        for i in range(len(f)):
+            if len(f[i].strip()) >= 1:
+                g.append(f[i].strip())
+        #print(g)
+        G = Game(id=b[1].strip(),winningNumbers=e, numbersYouHave=g, matches=[], value=0, copies=1)
+        z = 0
+        q = []
+        for k in G.numbersYouHave:
+            if k in G.winningNumbers:
+                z += 1
+                q.append(k)
+        G.matches = q
+        #print("Card ", G.id, " Matches : ", z)
+        current = 1
+        if z > 0:
+            for w in range(z-1):
+                current *= 2
+        else: 
+            current = 0
+        #print("Card ", G.id, " Value : ", current)
+        G.value = current
+        Worth += current
+        Games.append(G)
+    cards = []
+    s = 0
+    for i in range(len(Games)):
+        for j in range(len(Games[i].matches)):
+            for k in range(Games[i].copies):
+                Games[i + j + 1].copies += 1
+    for z in Games:
+        print(z)
+    for a in Games:
+        s += a.copies
+    print("Part 1: ", Worth)
+    print("Part 2:", s)
+    
