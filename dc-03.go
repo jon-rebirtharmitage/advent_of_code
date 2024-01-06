@@ -55,6 +55,44 @@ func (n *Node) InOrderTraversal() {
 	}
 }
 
+// printTreeLevel prints nodes at a specific level of the binary tree
+func printTreeLevel(nodes []*Node) {
+	for _, node := range nodes {
+		if node == nil {
+			fmt.Print("_ ")
+		} else {
+			fmt.Printf("%d ", node.Key)
+		}
+	}
+	fmt.Println()
+}
+
+// PrintTree visually prints the binary tree
+func PrintTree(root *Node) {
+	if root == nil {
+		fmt.Println("Tree is empty")
+		return
+	}
+
+	var currentLevel []*Node
+	var nextLevel []*Node
+
+	currentLevel = append(currentLevel, root)
+
+	for len(currentLevel) > 0 {
+		printTreeLevel(currentLevel)
+
+		for _, node := range currentLevel {
+			if node != nil {
+				nextLevel = append(nextLevel, node.Left, node.Right)
+			}
+		}
+
+		currentLevel = nextLevel
+		nextLevel = nil
+	}
+}
+
 func main() {
 	root := &Node{Key: 10}
 	root.Insert(5)
@@ -64,10 +102,11 @@ func main() {
 	root.Insert(12)
 	root.Insert(18)
 
-	fmt.Println("In-Order Traversal:")
-	root.InOrderTraversal()
+	//fmt.Println("In-Order Traversal:")
+	//root.InOrderTraversal()
 
 	searchKey := 7
+	PrintTree(root)
 	if root.Search(searchKey) {
 		fmt.Printf("\n%d found in the binary tree.\n", searchKey)
 	} else {
