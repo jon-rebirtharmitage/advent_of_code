@@ -1,6 +1,5 @@
-//module github.com/eclipse/paho.golang
-module github.com/eclipse/paho.mqtt.golang
+module github.com/gosnmp/gonsmp
 
 go 1.20
 
-require github.com/eclipse/paho.golang v0.11.0 // indirect
+require github.com/gosnmp/gosnmp v1.37.0
